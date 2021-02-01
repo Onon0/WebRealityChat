@@ -15,7 +15,7 @@ io.on('connection', (socket)=>{
     console.log(socket.id)
     socket.broadcast.emit('user-joined', {"id":socket.id})
     socket.on('moved', (data)=>{
-        console.log(data)
+        //console.log(data)
         socket.broadcast.emit('moved', data)
     })
 

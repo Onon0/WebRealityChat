@@ -1,4 +1,10 @@
 const socket = io('/')
+
+var peer = new Peer(socket.id);
+peer.on('open', function(id){
+    console.log('My peer id:' + id)
+})
+
 var camera = document.getElementById('camera');
 var myScene = document.getElementById('myScene');
 document.addEventListener('keypress', event=>{
@@ -10,6 +16,7 @@ socket.on('user-joined', (data)=>{
         var user_avatar = document.createElement("a-sphere")
         user_avatar.setAttribute('position', '0 1.6 0')
         user_avatar.setAttribute('id' , data.id)
+
         myScene.append(user_avatar)
         console.log(data.id)
 
