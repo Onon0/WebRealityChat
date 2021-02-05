@@ -1,32 +1,27 @@
-var express = require('express');
-var app = express();
+const express = require('express')
+const app = express()
+const server = app.listen(3000)
+const io = require('socket.io')(server)
 
-//var node_modules = require('./node_modules/aframe'); 
-
-var server = require('http').Server(app);
 app.use(express.static('public'))
-app.use(express.static('node_modules'))
+io.on('connection', socket=>{
+    socket.on('join-room', (roomId, userId)=>{
+        console.log("room:"+roomId+"user joined:"+ userId)
+        socket.join(roomId)
+        socket.to(roomId).broadcast.emit('user-connected', userId)
 
-//app.use('/node_modules', node_modules)
-var socket = require('socket.io');
-var io = socket(server);
-app.set('view engine', 'ejs')
-io.on('connection', (socket)=>{
-    console.log(socket.id)
-    socket.broadcast.emit('user-joined', {"id":socket.id})
-    socket.on('moved', (data)=>{
-        //console.log(data)
+        socket.on('disconnect', ()=>{
+            socket.to(roomId).broadcast.emit('user-disconnected', userId)
+        })
+    })
+
+    socket.on('moved', data=>{
+        console.log(data)
         socket.broadcast.emit('moved', data)
     })
-
-    socket.on('user-joined', data=>{
-        socket.broadcast.emit('user-joined', data)
-    })
-});
-
-
-
-server.listen(3000, ()=>{
-    console.log('listening on port:3000')
+    
 })
+
+
+
 
