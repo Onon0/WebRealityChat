@@ -8,7 +8,7 @@ var getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || nav
 const peers = {}
 peer.on('open', id=>{
     console.log(id)
-    socket.emit('join-room', 10,id)
+    socket.emit('join-room', ROOM_ID,id)
     
 })
 socket.on('user-connected', userId=>{
@@ -21,14 +21,18 @@ socket.on('user-connected', userId=>{
       var call = peer.call(userId, stream);
         
       call.on('stream', function (remoteStream) {
-        var video = document.createElement("video");
-        var player = document.createElement("a-box");
-        video.setAttribute('id', 'asset' + userId);
-        player.setAttribute('id', userId);
-        player.setAttribute('position', '0 1.6 0');
-        player.setAttribute('material', 'src: #asset' + userId);
-        addVideoStream(video, remoteStream, player);
-        peers[userId] = call
+        if(document.getElementById(userId) === null){
+          var video = document.createElement("video");
+          var player = document.createElement("a-box");
+          video.setAttribute('id', 'asset' + userId);
+          player.setAttribute('id', userId);
+          player.setAttribute('position', '0 1.6 0');
+          player.setAttribute('material', 'src: #asset' + userId);
+          player.setAttribute('dev', 'call');
+          addVideoStream(video, remoteStream, player);
+          peers[userId] = call
+        }
+        
       });
         }, function(err) {
             console.log('Failed to get local stream' ,err);
@@ -45,7 +49,7 @@ socket.on('moved', data=>{
     var player = document.getElementById(data.id)
    if(player !== null){
         player.setAttribute('position', data.pos)
-        console.log("" +data.id + "moved to" + data.pos.x)
+        player.setAttribute('rotation', data.rot)
     }
 })
 
@@ -59,13 +63,19 @@ peer.on('call', function(call) {
   
 
     call.on('stream', function(remoteStream) {
-        var video = document.createElement('video')
-        var player = document.createElement('a-box')
-        video.setAttribute('id', 'asset' + call.peer)
-        player.setAttribute('id', call.peer)
-        player.setAttribute('position', "0 1.6 0")
-        player.setAttribute('material', 'src: #asset' + call.peer)
-        addVideoStream(video, remoteStream, player)
+      if(document.getElementById(call.peer) === null){
+          var video = document.createElement('video')
+          var player = document.createElement('a-box')
+        
+          video.setAttribute('id', 'asset' + call.peer)
+          player.setAttribute('id', call.peer)
+          player.setAttribute('position', "0 1.6 0")
+          player.setAttribute('material', 'src: #asset' + call.peer)
+          player.setAttribute('dev', 'answer');
+          addVideoStream(video, remoteStream, player)
+          peers[userId] = call
+        }
+        
     });
   }, function(err) {
     console.log('Failed to get local stream' ,err);
@@ -87,7 +97,8 @@ function addVideoStream(video, stream, player){
 
 document.addEventListener('keypress', event=>{
     
-    socket.emit('moved',{id: peer.id ,pos:camera.getAttribute('position')})
+    socket.emit('moved',{id: peer.id ,pos:camera.getAttribute('position'), rot:camera.getAttribute('rotation')})
 
-    console.log("" + peer.id + "" + camera.getAttribute('position'))
+    //console.log("" + peer.id + "" + camera.getAttribute('position'))
+    
 })
