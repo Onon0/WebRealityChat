@@ -8,6 +8,7 @@
     <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
     <script>
         const ROOM_ID = "<%= roomId %>"
+        const UNAME = "<%= uname %>"
     </script>
     <script defer src = "client.js"></script>
     <title>Document</title>
@@ -19,7 +20,7 @@
             
         </a-asset>
         <a-entity id = 'camera' camera wasd-controls look-controls position="0 1.6 0"></a-entity>
-        <a-text id = 'con' value="ABCdcs" negate="false" scale="2 2 1" position="0 2 -4"></a-text>
+        <a-text id = 'con' value="ABCdcs" negate="true" scale="2 2 1" position="0 2 -4"></a-text>
         
         <a-box position="-1 0.5 -3" rotation="0 45 0" color="#4CC3D9"></a-box>
         <a-sphere position="0 1.25 -5" radius="1.25" color="#EF2D5E"></a-sphere>

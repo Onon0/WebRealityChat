@@ -3,6 +3,7 @@ const app = express()
 const server = app.listen(3000)
 const io = require('socket.io')(server)
 const{v4 : uuidV4} = require('uuid')
+
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
 app.get('/',(req, res)=>{
@@ -14,21 +15,27 @@ app.get('/home',(req, res)=>{
     res.render('home')
 })
 
-app.get('/login', (req, res)=>{
-    res.redirect(uuidV4());
-    console.log('logged');
+app.get('/join', (req, res)=>{
+    res.redirect('/'+req.query.roomId + '?uname='+req.query.uname);
+    
+})
+
+app.get('/login/:uname', (req, res)=>{
+    res.redirect('/'+uuidV4() + '?uname='+req.params.uname);
+    
 })
 
 app.get('/:room', (req, res) => {
-    res.render('room', { roomId: req.params.room })
+    
+    res.render('room', { roomId: req.params.room, uname:req.query.uname })
 })
 
 
 io.on('connection', socket=>{
-    socket.on('join-room', (roomId, userId)=>{
-        console.log("room:"+roomId+"user joined:"+ userId)
+    socket.on('join-room', (roomId, userId, uname)=>{
+        console.log("room:"+roomId+"user joined:"+ uname)
         socket.join(roomId)
-        socket.to(roomId).broadcast.emit('user-connected', userId)
+        socket.to(roomId).broadcast.emit('user-connected', {"userId":userId, "uname": uname})
 
         socket.on('disconnect', ()=>{
             socket.to(roomId).broadcast.emit('user-disconnected', userId)
@@ -36,7 +43,7 @@ io.on('connection', socket=>{
     })
 
     socket.on('moved', data=>{
-        console.log(data)
+       // console.log(data)
         socket.broadcast.emit('moved', data)
     })
 
