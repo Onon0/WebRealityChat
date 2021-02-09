@@ -1,6 +1,6 @@
 const express = require('express')
 const app = express()
-const port = process.env.PORT || 3000;
+const port = 13366 || 3000;
 const server = app.listen(port)
 const io = require('socket.io')(server)
 const{v4 : uuidV4} = require('uuid')
