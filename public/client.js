@@ -6,7 +6,7 @@ const socket = io('/');
 var peer = new Peer(undefined, {
   secure:'true',
   host: 'web3dchat.herokuapp.com',
-  port: '443'
+  port: '9000'
 });
 var assets = document.getElementById("asset");
 var scene = document.getElementById("myScene");
