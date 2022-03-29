@@ -4,7 +4,7 @@ const socket = io('/');
   port: '3001'
 });//*/
 var peer = new Peer(undefined, {
-  host: 'https://web3dchat.herokuapp.com',
+  host: 'web3dchat.herokuapp.com',
   port: '443'
 });
 var assets = document.getElementById("asset");
