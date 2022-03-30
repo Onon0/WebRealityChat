@@ -3,11 +3,13 @@ const socket = io('/');
   host: '/',
   port: '3001'
 });//*/
-var peer = new Peer(undefined, {
+/*var peer = new Peer(undefined, {
   secure:'true',
   host: '0.peerjs.com',
   port: '9000'
 });
+//*/
+var peer = new Peer();
 var assets = document.getElementById("asset");
 var scene = document.getElementById("myScene");
 var camera = document.getElementById("camera");
